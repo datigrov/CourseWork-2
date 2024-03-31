@@ -1,4 +1,5 @@
-package com.course.work.democoursework;
+package com.course.work.democoursework.Service;
+import com.course.work.democoursework.Question;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;

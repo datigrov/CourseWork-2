@@ -3,7 +3,6 @@ package com.course.work.democoursework.Exception;
 public class RemoveValueIsNotException extends RuntimeException {
     public RemoveValueIsNotException() {
     }
-
     public RemoveValueIsNotException(String message) {
         super(message);
     }

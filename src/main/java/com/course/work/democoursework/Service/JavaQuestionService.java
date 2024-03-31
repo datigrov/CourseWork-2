@@ -2,9 +2,7 @@ package com.course.work.democoursework.Service;
 
 import com.course.work.democoursework.Exception.RemoveValueIsNotException;
 import com.course.work.democoursework.Question;
-import com.course.work.democoursework.QuestionService;
 import org.springframework.stereotype.Service;
-
 import java.util.*;
 
 @Service
