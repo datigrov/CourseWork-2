@@ -32,6 +32,15 @@ public class JavaQuestionService implements QuestionService {
         }
     }
 
+    public Question remove(String question, String answer) {
+        Question removeQuation = new Question(question, answer);
+        if (questions.remove(removeQuation)) {
+            return removeQuation;
+        } else {
+            throw new RemoveValueIsNotException("Данные не найдены");
+        }
+    }
+
     @Override
     public Collection<Question> getAll() {
         return Collections.unmodifiableCollection(questions);
