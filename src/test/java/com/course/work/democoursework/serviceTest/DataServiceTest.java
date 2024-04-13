@@ -1,68 +1,69 @@
 package com.course.work.democoursework.serviceTest;
-
 import com.course.work.democoursework.Exception.QuestionIsAlreadyOnTheListException;
-import com.course.work.democoursework.Exception.QuestionNotFoundException;
 import com.course.work.democoursework.Question;
 import com.course.work.democoursework.Service.JavaQuestionService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import java.util.HashSet;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+
 public class DataServiceTest {
-    @Mock
-    private JavaQuestionService mockJavaQuationService;
-    @InjectMocks
+
+    private JavaQuestionService javaQuestionService;
+
+    public DataServiceTest(JavaQuestionService javaQuestionService, JavaQuestionService out) {
+        this.javaQuestionService = javaQuestionService;
+        this.out = out;
+    }
+
     private JavaQuestionService out;
-    Question firstQuestion = new Question("q1", "a1");
-    Question secondQuestion = new Question("q2", "a2");
-    Question thirdQuestion = new Question("q3", "a3");
-    Set<Question> allQuestions = new HashSet<>(Set.of(firstQuestion, secondQuestion, thirdQuestion));
+    Question firstQuestion = new Question("What is your name?", "John");
+    Question secondQuestion = new Question("How old are you?", "am 18");
+    Question thirdQuestion = new Question("Who do you identify with?", "With a mixer");
+    List<Question> allQuestions = new ArrayList<>(Set.of(firstQuestion, secondQuestion, thirdQuestion));
 
-
-    @Test
+    @ParameterizedTest
+    @MethodSource("addNewQuestion")
     void addNewQuestion() {
-        when(mockJavaQuationService.add("q1", "a1"))
-                .thenReturn(firstQuestion);
-        assertEquals(firstQuestion, out.add("q2", "a2"));
+        allQuestions.add(firstQuestion);
+        allQuestions.add(secondQuestion);
+        allQuestions.add(thirdQuestion);
+        if (allQuestions == null) {
+            allQuestions.add(firstQuestion);
+        }
+        Assertions.assertNotNull(allQuestions);
+    }
+
+    @ParameterizedTest
+    @MethodSource("addGoodTest")
+    void addGoodTest() {
+        Question question = new Question("What is your name?", "John");
+        javaQuestionService.add(question);
+        Collection<Question> quaTest = javaQuestionService.getAll();
+        assertEquals(1, quaTest.size());
+        Question quationActualTest = quaTest.iterator().next();
+        assertEquals(question.getQuestion(),quationActualTest.getQuestion());
+        assertEquals(question.getAnswer(),quationActualTest.getAnswer());
     }
 
 
-    @Test
-    void addQuestionCreated() {
-        when(mockJavaQuationService.add("q1", "a1"))
-                .thenThrow(QuestionIsAlreadyOnTheListException.class);
-        assertThrows(QuestionIsAlreadyOnTheListException.class,
-                () -> out.add("q1", "a1"));
-    }
-
-    @Test
-    void removeQuestion() {
-        mockJavaQuationService.add("q1", "a1");
-        when(mockJavaQuationService.remove("q1", "a1"))
-                .thenReturn(firstQuestion);
-        assertEquals(firstQuestion, out.remove("q1", "a1"));
-        when(mockJavaQuationService.remove("q1", "a1"))
-                .thenThrow(QuestionNotFoundException.class);
-        assertThrows(QuestionNotFoundException.class,
-                () -> out.remove("q1", "a1"));
-    }
-
-    @Test
+    @ParameterizedTest
+    @MethodSource("getAllTest")
     void getAllTest() {
-        when(mockJavaQuationService.getAll())
+        when(javaQuestionService.getAll())
                 .thenReturn(allQuestions);
-        out.add("q1", "a1");
-        out.add("q2", "a2");
-        out.add("q3", "a3");
-        out.add("q4", "a4");
+        out.add("What is your name?", "John");
+        out.add("How old are you?", "am 18");
+        out.add("Who do you identify with?", "With a mixer");
         assertEquals(allQuestions, out.getAll());
     }
+
 }

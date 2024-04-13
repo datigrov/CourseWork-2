@@ -1,5 +1,7 @@
 package com.course.work.democoursework.Service;
 
+import com.course.work.democoursework.Exception.QuantityRequestExceededException;
+import com.course.work.democoursework.Exception.QuestionIsAlreadyOnTheListException;
 import com.course.work.democoursework.Exception.RemoveValueIsNotException;
 import com.course.work.democoursework.Question;
 import org.springframework.stereotype.Service;
@@ -8,6 +10,7 @@ import java.util.*;
 @Service
 public class JavaQuestionService implements QuestionService {
     private final List<Question> questions = new ArrayList<>();
+    private static final int QUESTION_IS_ADD = 1;
     Random random = new Random();
 
     @Override
@@ -21,6 +24,21 @@ public class JavaQuestionService implements QuestionService {
     public Question add(Question question) {
         questions.add(question);
         return question;
+    }
+
+    @Override
+    public Question addedQuestion(String question, String answer) {
+        Question questionIsCreated = new Question(question, answer);
+        if (questions.size() >= QUESTION_IS_ADD) {
+            String message = String.format("Колличество запросов превышено", questionIsCreated);
+            throw new QuantityRequestExceededException(message);
+        }
+        if (questions.contains(questionIsCreated)) {
+            String message = String.format("Вопрос уже есть в списке", questionIsCreated);
+            throw new QuestionIsAlreadyOnTheListException(message);
+        }
+        questions.add(questionIsCreated);
+        return questionIsCreated;
     }
 
     @Override
